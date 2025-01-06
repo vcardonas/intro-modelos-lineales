@@ -20,14 +20,232 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+**Entender que se busca proyectar un vector en un subespacio de variables**
+
 # Introducción
+
+## ¿Qué es un modelo?
+
+Un modelo proporciona **un marco teórico para comprender mejor un fenómeno de interés**.
+
+El modelo postulado puede ser una *simplificación idealizada* de la compleja situación del mundo real, pero en muchos de esos casos, **los modelos empíricos proporcionan aproximaciones útiles de las relaciones entre las variables**.
+
+Estas relaciones pueden ser **asociativas** o **causales**.
+
+## Asociación vs Causalidad
+
+| Asociación | Causalidad |
+|------------------------------------|------------------------------------|
+| \* Cuantifica la **fuerza de relación** entre dos variables. | \* Relación en la que un cambio en una variable (la **causa**) produce un cambio en otra variable (el **efecto**). |
+| \* El análisis de **correlación** mide la asociación, no significa causalidad. | \* El análisis de **regresión** puede ayudar a confirmar una relación de causa y efecto, pero [no]{style="color:red"} puede ser la única base de tal afirmación. |
+| \* El coeficiente de correlación indica el grado de relación simultáneo entre dos variables. | \* En la regresión me interesa construir una función que arroje una **predicción**. |
+| $\hat{\rho}_{x,y} = \hat{\rho}_{y,x}$ | $Y = f(X) + e$ |
+
+Por lo que en la regresión, se pueden hacer dos diferentes análisis:
+
+-   **Análisis explicativos:** Desentrañar la estructura y la forma de función.
+-   **Análisis predictivos:** Aprender la función para meterle valores de X y obtener predictores de Y.
+
+[**Advertencias:**]{style="color:red"}
+
+-   La causalidad implica una correlación necesaria.
+-   Se puede predecir si la relación **NO** es causal.
+-   La causalidad puede ser **bidireccional**.
+-   La dependencia (escogencia de variable independiente) puede ser **pragmática**.
+-   Puede existir causalidad así hayan datos atípicos, esto debido a **errores de medición**.
+
+## $Y = f(X) + e$ bajo Modelación Probabilística
+
+Dado que $Y$, $X$ y $e$ son variables aleatorias (---), se supone que:
+
+-   La relación entre $X$ y $Y$ se puede capturar por medio de una función.
+-   $Y, X \in L^2(\Omega, \Im, p)$.
+
+Siendo $L^2(\Omega, \Im, p)$ es el *espacio de las variables cuadrado integrales*, es decir, el espacio de todas las variables aleatorias definidas sobre el espacio de probabilidad.
+
+En $L^2(\Omega, \Im, p)$, **se garantiza que se puede estudiar la asociación entre variables** (muy similar a como se hace con vectores).
+
+La solución más sencilla pero restringida es **dar forma conocida forma a** $f$ t.q. $$f(X) = a + bx$$
+
+Donde el **mejor predictor lineal (MPL)** es $\hat{f}(X) = b_0 + b_1 X$
+
+Entonces, se puede escribir de la forma
+
+$$\hat{Y} = b_0 + b_1 X$$
 
 # Preliminares
 
-# Modelo Lineal Simple
+## Álgebra Lineal
 
-## Modelo
+### Vector
 
-## Estimación de $\beta_0, \beta_1$ y $\sigma^2$
+Es un conjunto ordenado de $n$ número reales $$\mathbf{v} = (v_1, v_2, \dots ,v_n)^T \in \mathbb{R}^n \text{ con } v_i \in \mathbb{R} \ \forall i$$
+
+```{r, results = 'hold'}
+# vector
+v <- c(1, 2, 3, 4)
+v
+```
+
+Sea $\alpha$ un escalar (esto significa que $\alpha$ es un número real). Entonces, el **producto por escalar** de $\alpha$ y $\mathbf{v}$ es el vector denotado por $\alpha \mathbf{v}$ que está dado por $$\alpha \mathbf{v} = \begin{pmatrix} \alpha v_1 \\ \alpha v_2 \\ \vdots \\ \alpha v_n \end{pmatrix}$$
+
+```{r, results = 'hold'}
+# escalar
+alpha <- 3
+# vector x escalar
+v*alpha
+```
+
+### Combinación lineal
+
+Una combinación lineal de los vectores $\mathbf{v}_1, \mathbf{v}_2, ..., \mathbf{v}_n \in \mathbb{R}^n$ es un vector formado usando los vectores lineales y coeficientes $\alpha_i \in \mathbb{R}$, así: $$\alpha_1 \mathbf{v}_1 + \alpha_2 \mathbf{v}_2 + ... + \alpha_n \mathbf{v}_n$$ donde $\alpha_i$ son escalares y son llamados *coeficientes de la combinación lineal*.
+
+```{r, results = 'hold'}
+# vectores
+u <- c(1, 1)
+v <- c(0, 2)
+
+# 2u - 3v
+print(2*u)
+print(3*v)
+
+print((2*u) - (3*v))
+```
+
+**Los modelos de regresión lineal son combinaciones lineales.**
+
+### Matriz
+
+Es un **arreglo rectangular ordenado** de $m \times n$ números reales de la forma: $$\mathbf{A}_{m \times n} = 
+\begin{pmatrix}
+  a_{11} & a_{12} & \cdots & a_{1n}\\
+  a_{21} & a_{22} & \cdots & a_{2n}\\
+  \vdots & \vdots & \ddots & \vdots\\
+   a_{m1} & a_{m2} & \cdots & a_{mn}\\
+\end{pmatrix}$$ donde $a_{11},  a_{12}, \cdots, a_{mn}$ son llamados las **entradas de la matriz**.
+
+```{r, results = 'hold'}
+# matriz
+A <- matrix(c(0,2,-2, 1,3,1, 6,4,4), nrow = 3, ncol = 3)
+A
+```
+
+La matriz $\alpha \mathbf{A}$ de $m \times n$ está dada por $$\alpha \mathbf{A} = (\alpha a_{ij}) = \begin{pmatrix}
+  \alpha a_{11} & \alpha a_{12} & \cdots & \alpha a_{1n}\\
+  \alpha a_{21} & \alpha a_{22} & \cdots & \alpha a_{2n}\\
+  \vdots & \vdots & \ddots & \vdots\\
+   \alpha a_{m1} & \alpha a_{m2} & \cdots & \alpha a_{mn}\\
+\end{pmatrix}$$
+
+```{r, results = 'hold'}
+# escalar
+alpha <- 2
+# matriz x escalar
+A*alpha
+```
+
+**Los vectores pueden ser vistos como casos especiales de matrices**.
+
+### Producto de matrices
+
+Sea $\mathbf{A} = (a_{ij})$ una matriz de $m \times n$ cuyo $i$-ésima fila está denotada por $\mathbf{a_i}$. Sea $\mathbf{B} = (b_{ij})$ una matriz de $n \times p$ cuya $j$-ésima columna está denotada por $\mathbf{b_j}$. Entonces el producto de $\mathbf{A}$ y $\mathbf{B}$ es una matriz $\mathbf{C} = (c_{ij})$ de $m \times p$, donde $$c_{ij} = \mathbf{a_i} \cdot \mathbf{b_j}$$
+
+-   Dos matrices pueden multiplicarse *sólo si el número de columnas de la primera es igual al número de renglones de la segunda*.
+
+Por ejemplo, Bernardo compra 3 helados de coco, 5 maracuyá, 6 mora. Cada helado cuesta 3.000 (coco), 4.000 (maracuyá), 5.000 (mora) ¿cuánto gastó Bernando en la compra de esos helados?
+
+$$
+\begin{pmatrix} 3 & 5 & 6 \end{pmatrix}_{1 \times 3} \cdot \begin{pmatrix} 3.000 \\ 4.000 \\ 5.000 \end{pmatrix}_{3 \times 1} = (3 \cdot 3000) + (5 \cdot 4000) + (6 \cdot 5000) = (59.000)_{1 \times 1}
+$$
+
+```{r, results = 'hold'}
+# escalar
+A <- matrix(c(3, 5, 6), nrow = 1)
+B <- matrix(c(3000, 4000, 5000), ncol = 1)
+
+A %*% B
+```
+
+```{r, results = 'hold', error = TRUE}
+# escalar
+A <- matrix(c(3, 5, 6, 7), nrow = 1)
+
+A %*% B
+```
+
+## Sistema de Ecuaciones Lineales
+
+Una ecuación lineal en las variables $x_1, x_2, \cdots, x_n$ es una ecuación de la forma $$a_1 x_1 + a_2 x_2 + \cdots + a_n x_n = b$$ donde los coeficientes $a_1, a_2, \cdots, a_n$ y el término constante $b$ son constantes reales.
+
+**Ejemplos de lo que NO son ecuaciones lineales:**
+* $x^2 + y^2 = 1$
+- $cos(x) + x = 3$
+- $\sqrt{x} + 3y = 1$
+
+Una solución a una ecuación lineal es un vector cuyas entradas satisfacen la ecuación cuando se sustituyen $x_1 = v_1, x_2 = v_2, \cdots, x_n = v_n$.
+
+$2*x + y = 1$
+```{r, results = 'hold'}
+x <- -1
+y <- 3
+
+2*x + y
+```
+
+Un sistema de ecuaciones lineales de $n$ ecuaciones con $m$ variables es un conjunto de ecuaciones de la forma $$\begin{matrix} a_{11}z_1 + a_{12}z_2 + \cdots + a_{1n}z_n = b_1 \\ a_{21}z_1 + a_{22}z_2 + \cdots + a_{2n}z_n = b_2 \\ \vdots \\ a_{m1}z_1 + a_{m2}z_2 + \cdots + a_{mn}z_n = b_m \end{matrix}$$ donde $a_{ij}$ indica el coeficiente de la ecuación lineal $i$-ésima y de la variable $j$-ésima, y los coeficientes $b_1, \cdots, b_m$ son constantes reales.
+
+También, puede expresarse de la siguiente forma $$\mathbf{A}_{m \times n}\mathbf{z}_{n \times 1} = \mathbf{b}_{m \times 1}$$
+
+En este caso, una solución al sistema es un **vector que es simúltaneamente una solución de cada ecuación del sistema**.
+
+Por ejemplo, se tiene el siguiente sistema de ecuaciones
+$$
+\begin{align}
+x + 2y + 3z = 20 \\
+2x + 2y + 3z = 100 \\
+3x + 2y + 8z = 200
+\end{align}
+$$
+Su solución puede encontrarse por medio de `R`.
+```{r, results = 'hold'}
+A <- rbind(c(1, 2, 3),
+           c(2, 2, 3),
+           c(3, 2, 8))
+b <- c(20, 100, 200)
+
+# usar función solve
+solve(A, b)
+```
+
+Lo que significa que $x = 80, y = -36, z = 4$.
+
+## Proyección
+
+Sean $\mathbf{u}, \mathbf{v}$ dos vectores en $\mathbb{R}^n$. La Proyección de $\mathbf{u}$ sobre $\mathbf{v} \ (\neq \mathbf{0})$ es un vector en la dirección de $\mathbf{v}$ resultante de proyectar ortogonalmente a $\mathbf{u}$.
+
+```{r, results = 'hold'}
+# vectores
+u <- c(1,1)
+v <- c(2,3)
+
+# proyección de u sobre v
+proy_v_u <- as.numeric((t(u)%*%v)/(t(v)%*%v))*v
+
+# vector 2
+v2 <- c(-2,-3)
+
+# proyección de u sobre v2
+proy_v2_u <- as.numeric((t(u)%*%v2)/(t(v2)%*%v2))*v2
+
+P_v <- v%*%(as.numeric((t(v)%*%v)^(-1))*t(v))
+
+print(P_v%*%u)
+
+P_v2 <- v2%*%(as.numeric((t(v2)%*%v2)^(-1))*t(v2))
+
+print(P_v2%*%u)
+
+print(P_v2%*%v2)
+```
 
 # Referencias
