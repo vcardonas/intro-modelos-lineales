@@ -1,0 +1,33 @@
+---
+title: "Introducción a los Modelos Lineales"
+author: 
+- Valentina Cardona & Adrián Rey
+- Email vcardonas@unal.edu.co & 
+- GitHub https://github.com/vcardonas
+- Rpubs https://rpubs.com/vcardonas
+date: ""
+output:
+  html_document:
+    highlight: default
+    theme: spacelab
+    number_sections: yes
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introducción
+
+# Preliminares
+
+# Modelo Lineal Simple
+
+## Modelo
+
+## Estimación de $\beta_0, \beta_1$ y $\sigma^2$
+
+# Referencias
