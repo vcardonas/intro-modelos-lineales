@@ -10,5 +10,7 @@ El proyecto se desarrolló con las siguientes versiones:
 ## Contenido
 Se dispone de un script denominado [intro-modelos-lineales.Rmd](./intro-modelos-lineales.Rmd).
 
+El contenido está publicado en<https://rpubs.com/vcardonas/intro-modelos-lineales>, donde puede visualizarse mejor.
+
 ## Propietarios
 El proyecto es realizado por Adrián Rey, Valentina Cardona (vcardonas@unal.edu.co) y Juan Diego Baéz.
