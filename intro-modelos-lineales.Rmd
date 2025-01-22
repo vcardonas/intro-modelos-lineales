@@ -1,10 +1,9 @@
 ---
 title: "Introducción a los Modelos Lineales"
 author: 
-- Valentina Cardona & Adrián Rey
-- Email vcardonas@unal.edu.co & 
-- GitHub https://github.com/vcardonas
-- Rpubs https://rpubs.com/vcardonas
+- Adrián Rey, Valentina Cardona & Juan Diego Baez
+- GitHub https://github.com/vcardonas/intro-modelos-lineales
+- Rpubs https://rpubs.com/vcardonas/intro-modelos-lineales
 date: ""
 output:
   html_document:
@@ -20,17 +19,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**Entender que se busca proyectar un vector en un subespacio de variables**
-
 # Introducción
 
-## ¿Qué es un modelo?
-
-Un modelo proporciona **un marco teórico para comprender mejor un fenómeno de interés**.
-
-El modelo postulado puede ser una *simplificación idealizada* de la compleja situación del mundo real, pero en muchos de esos casos, **los modelos empíricos proporcionan aproximaciones útiles de las relaciones entre las variables**.
-
-Estas relaciones pueden ser **asociativas** o **causales**.
+Los modelos lineales son ampliamente utilizados en estadística y aprendizaje automático debido a su simplicidad y facilidad de interpretación.
 
 ## Asociación vs Causalidad
 
@@ -54,198 +45,160 @@ Por lo que en la regresión, se pueden hacer dos diferentes análisis:
 -   La dependencia (escogencia de variable independiente) puede ser **pragmática**.
 -   Puede existir causalidad así hayan datos atípicos, esto debido a **errores de medición**.
 
-## $Y = f(X) + e$ bajo Modelación Probabilística
+## ¿Qué es un Modelo Lineal?
 
-Dado que $Y$, $X$ y $e$ son variables aleatorias (---), se supone que:
+Un modelo proporciona **un marco teórico para comprender mejor un fenómeno de interés**, proporcionando aproximaciones útiles sobre las relaciones entre las variables.
 
--   La relación entre $X$ y $Y$ se puede capturar por medio de una función.
--   $Y, X \in L^2(\Omega, \Im, p)$.
+### Una Ecuación Lineal
 
-Siendo $L^2(\Omega, \Im, p)$ es el *espacio de las variables cuadrado integrales*, es decir, el espacio de todas las variables aleatorias definidas sobre el espacio de probabilidad.
+En un modelo, se asume que **la relación entre** $X$ y $Y$ se puede capturar por medio de una función matemática.
 
-En $L^2(\Omega, \Im, p)$, **se garantiza que se puede estudiar la asociación entre variables** (muy similar a como se hace con vectores).
+<p align="center">
 
-La solución más sencilla pero restringida es **dar forma conocida forma a** $f$ t.q. $$f(X) = a + bx$$
+<img src="./images/fun_cos.png" alt="Función Coseno" width="200"/> <img src="./images/fun_cuadratica.png" alt="Función Cuadrática" width="200"/> <img src="./images/fun_recta.png" alt="Función Lineal" width="200"/>
 
-Donde el **mejor predictor lineal (MPL)** es $\hat{f}(X) = b_0 + b_1 X$
+</p>
 
-Entonces, se puede escribir de la forma
+Le llamamos modelos **lineales** porque esta función es una **ecuación lineal**, la cual describe una línea recta en un plano cartesiano (espacio bidimensional).
 
-$$\hat{Y} = b_0 + b_1 X$$
+### Ejemplo gráfico
 
-# Preliminares
+Una ecuación lineal tiene la forma: $$y = a + bx$$ donde
 
-## Álgebra Lineal
+-   $a$: Es el valor inicial o **intercepto**.
+-   $b$: Es la **pendiente**, que determina cómo cambia $y$ por cada unidad de cambio en $x$.
 
-### Vector
-
-Es un conjunto ordenado de $n$ número reales $$\mathbf{v} = (v_1, v_2, \dots ,v_n)^T \in \mathbb{R}^n \text{ con } v_i \in \mathbb{R} \ \forall i$$
+Explorar: <https://www.desmos.com/calculator/tohv4xqb0k>
 
 ```{r, results = 'hold'}
-# vector
-v <- c(1, 2, 3, 4)
-v
+knitr::include_url("https://www.desmos.com/calculator/tohv4xqb0k")
 ```
 
-Sea $\alpha$ un escalar (esto significa que $\alpha$ es un número real). Entonces, el **producto por escalar** de $\alpha$ y $\mathbf{v}$ es el vector denotado por $\alpha \mathbf{v}$ que está dado por $$\alpha \mathbf{v} = \begin{pmatrix} \alpha v_1 \\ \alpha v_2 \\ \vdots \\ \alpha v_n \end{pmatrix}$$
+# Correlación
 
-```{r, results = 'hold'}
-# escalar
-alpha <- 3
-# vector x escalar
-v*alpha
-```
+# Regresión lineal
 
-### Combinación lineal
+La ecuación de una línea recta que relaciona dos variables es
 
-Una combinación lineal de los vectores $\mathbf{v}_1, \mathbf{v}_2, ..., \mathbf{v}_n \in \mathbb{R}^n$ es un vector formado usando los vectores lineales y coeficientes $\alpha_i \in \mathbb{R}$, así: $$\alpha_1 \mathbf{v}_1 + \alpha_2 \mathbf{v}_2 + ... + \alpha_n \mathbf{v}_n$$ donde $\alpha_i$ son escalares y son llamados *coeficientes de la combinación lineal*.
+$$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x}$$ **¡Pero el mundo NO es estrictamente lineal!**
 
-```{r, results = 'hold'}
-# vectores
-u <- c(1, 1)
-v <- c(0, 2)
+Aunque los datos pueden seguir un patrón aproximado lineal, *la línea generalmente no pasará por encima de todos los puntos*. 
 
-# 2u - 3v
-print(2*u)
-print(3*v)
+Esto se debe a los **errores**, que representan la distancia entre los datos observados y la línea recta.
 
-print((2*u) - (3*v))
-```
+<img src="./images/errores.png" alt="Errores" width="500"/>
 
-**Los modelos de regresión lineal son combinaciones lineales.**
+Tomado de: [Regresión Lineal Simple. Conceptos básicos](https://www.youtube.com/watch?v=vbd3QJPHTJM)
 
-### Matriz
+El objetivo de la regresión lineal es encontrar los coeficientes $\mathbf{\beta}$ que minimicen estos errores.
 
-Es un **arreglo rectangular ordenado** de $m \times n$ números reales de la forma: $$\mathbf{A}_{m \times n} = 
-\begin{pmatrix}
-  a_{11} & a_{12} & \cdots & a_{1n}\\
-  a_{21} & a_{22} & \cdots & a_{2n}\\
-  \vdots & \vdots & \ddots & \vdots\\
-   a_{m1} & a_{m2} & \cdots & a_{mn}\\
-\end{pmatrix}$$ donde $a_{11},  a_{12}, \cdots, a_{mn}$ son llamados las **entradas de la matriz**.
+Esto se hace generalmente utilizando el **método de mínimos cuadrados**.
 
-```{r, results = 'hold'}
-# matriz
-A <- matrix(c(0,2,-2, 1,3,1, 6,4,4), nrow = 3, ncol = 3)
-A
-```
+*Jugar a minimizar el error:* <https://huggingface.co/spaces/FreddyHernandez/linear_regression_game>
 
-La matriz $\alpha \mathbf{A}$ de $m \times n$ está dada por $$\alpha \mathbf{A} = (\alpha a_{ij}) = \begin{pmatrix}
-  \alpha a_{11} & \alpha a_{12} & \cdots & \alpha a_{1n}\\
-  \alpha a_{21} & \alpha a_{22} & \cdots & \alpha a_{2n}\\
-  \vdots & \vdots & \ddots & \vdots\\
-   \alpha a_{m1} & \alpha a_{m2} & \cdots & \alpha a_{mn}\\
-\end{pmatrix}$$
+## Regresión lineal Simple
 
-```{r, results = 'hold'}
-# escalar
-alpha <- 2
-# matriz x escalar
-A*alpha
-```
+La regresión lineal simple tiene la siguiente forma:
 
-**Los vectores pueden ser vistos como casos especiales de matrices**.
+$$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x} + \mathbf{\epsilon}$$ donde
 
-### Producto de matrices
+-   $\mathbf{y}$ es la variable dependiente o respuesta.
 
-Sea $\mathbf{A} = (a_{ij})$ una matriz de $m \times n$ cuyo $i$-ésima fila está denotada por $\mathbf{a_i}$. Sea $\mathbf{B} = (b_{ij})$ una matriz de $n \times p$ cuya $j$-ésima columna está denotada por $\mathbf{b_j}$. Entonces el producto de $\mathbf{A}$ y $\mathbf{B}$ es una matriz $\mathbf{C} = (c_{ij})$ de $m \times p$, donde $$c_{ij} = \mathbf{a_i} \cdot \mathbf{b_j}$$
+-   $\mathbf{x}$ es la variable independiente o predictora.
 
--   Dos matrices pueden multiplicarse *sólo si el número de columnas de la primera es igual al número de renglones de la segunda*.
+-   $\mathbf{\beta_0}$ es el intercepto (el valor de $y$ cuando $x = 0$).
 
-Por ejemplo, Bernardo compra 3 helados de coco, 5 maracuyá, 6 mora. Cada helado cuesta 3.000 (coco), 4.000 (maracuyá), 5.000 (mora) ¿cuánto gastó Bernando en la compra de esos helados?
+-   $\beta_1$ es la pendiente de la línea o el coeficiente que indica el cambio en $y$ por cada unidad de cambio en $x$.
 
-$$
-\begin{pmatrix} 3 & 5 & 6 \end{pmatrix}_{1 \times 3} \cdot \begin{pmatrix} 3.000 \\ 4.000 \\ 5.000 \end{pmatrix}_{3 \times 1} = (3 \cdot 3000) + (5 \cdot 4000) + (6 \cdot 5000) = (59.000)_{1 \times 1}
-$$
+-   $\mathbf{\epsilon}$ es el término de error, que captura la variabilidad en $y$ no explicada por $x$.
 
-```{r, results = 'hold'}
-# escalar
-A <- matrix(c(3, 5, 6), nrow = 1)
-B <- matrix(c(3000, 4000, 5000), ncol = 1)
+[**Aclaración:**]{style="color:red"} El modelo es lineal en los parámetros ($\beta$) no en las variables independientes ($\mathbf{X}$).
 
-A %*% B
-```
+## Regresión lineal Múltiple
 
-```{r, results = 'hold', error = TRUE}
-# escalar
-A <- matrix(c(3, 5, 6, 7), nrow = 1)
+Cuando la respuesta $\mathbf{y}$ está influenciada por **más de una variable predictora**, se extiende a la forma:
 
-A %*% B
-```
+$$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x_1} + + \beta_1 \mathbf{x_2} + \cdots + \beta_{p-1} \mathbf{x}_{p-1} + \epsilon$$
+o de forma matricial:
 
-## Sistema de Ecuaciones Lineales
-
-Una ecuación lineal en las variables $x_1, x_2, \cdots, x_n$ es una ecuación de la forma $$a_1 x_1 + a_2 x_2 + \cdots + a_n x_n = b$$ donde los coeficientes $a_1, a_2, \cdots, a_n$ y el término constante $b$ son constantes reales.
-
-**Ejemplos de lo que NO son ecuaciones lineales:**
-* $x^2 + y^2 = 1$
-- $cos(x) + x = 3$
-- $\sqrt{x} + 3y = 1$
-
-Una solución a una ecuación lineal es un vector cuyas entradas satisfacen la ecuación cuando se sustituyen $x_1 = v_1, x_2 = v_2, \cdots, x_n = v_n$.
-
-$2*x + y = 1$
-```{r, results = 'hold'}
-x <- -1
-y <- 3
-
-2*x + y
-```
-
-Un sistema de ecuaciones lineales de $n$ ecuaciones con $m$ variables es un conjunto de ecuaciones de la forma $$\begin{matrix} a_{11}z_1 + a_{12}z_2 + \cdots + a_{1n}z_n = b_1 \\ a_{21}z_1 + a_{22}z_2 + \cdots + a_{2n}z_n = b_2 \\ \vdots \\ a_{m1}z_1 + a_{m2}z_2 + \cdots + a_{mn}z_n = b_m \end{matrix}$$ donde $a_{ij}$ indica el coeficiente de la ecuación lineal $i$-ésima y de la variable $j$-ésima, y los coeficientes $b_1, \cdots, b_m$ son constantes reales.
-
-También, puede expresarse de la siguiente forma $$\mathbf{A}_{m \times n}\mathbf{z}_{n \times 1} = \mathbf{b}_{m \times 1}$$
-
-En este caso, una solución al sistema es un **vector que es simúltaneamente una solución de cada ecuación del sistema**.
-
-Por ejemplo, se tiene el siguiente sistema de ecuaciones
 $$
 \begin{align}
-x + 2y + 3z = 20 \\
-2x + 2y + 3z = 100 \\
-3x + 2y + 8z = 200
+\mathbf{y} &= \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon} \\
+\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\ y_n \end{bmatrix}_{n \times 1} &= 
+\begin{bmatrix}
+1 & x_{11} & x_{12} & \cdots & x_{1,p-1} \\
+1 & x_{21} & x_{22} & \cdots & x_{2,p-1} \\
+\vdots & \vdots & \vdots & \ddots & \vdots\\
+1 & x_{n1} & x_{n2} & \cdots & x_{n,p-1} \\
+\end{bmatrix}_{n \times p}
+\begin{bmatrix} \beta_{0} \\ \beta_{1} \\ \vdots \\ \beta_{p-1} \end{bmatrix}_{p \times 1} + 
+\begin{bmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \vdots \\ \epsilon_n \end{bmatrix}_{n \times 1}
 \end{align}
 $$
-Su solución puede encontrarse por medio de `R`.
-```{r, results = 'hold'}
-A <- rbind(c(1, 2, 3),
-           c(2, 2, 3),
-           c(3, 2, 8))
-b <- c(20, 100, 200)
 
-# usar función solve
-solve(A, b)
-```
+### Representación geométrica
 
-Lo que significa que $x = 80, y = -36, z = 4$.
-
-## Proyección
-
-Sean $\mathbf{u}, \mathbf{v}$ dos vectores en $\mathbb{R}^n$. La Proyección de $\mathbf{u}$ sobre $\mathbf{v} \ (\neq \mathbf{0})$ es un vector en la dirección de $\mathbf{v}$ resultante de proyectar ortogonalmente a $\mathbf{u}$.
+Se puede observar que $\mathbf{X} \mathbf{\beta}$ es una combinación lineal de los vectores $\mathbf{X}$.
 
 ```{r, results = 'hold'}
 # vectores
-u <- c(1,1)
-v <- c(2,3)
+x1 <- c(1, 1)
+x2 <- c(0, 2)
 
-# proyección de u sobre v
-proy_v_u <- as.numeric((t(u)%*%v)/(t(v)%*%v))*v
+# Combinaciones lineales
+(2 * x1) - (3 * x2)
 
-# vector 2
-v2 <- c(-2,-3)
+(-10 * x1) + (2000 * x2)
 
-# proyección de u sobre v2
-proy_v2_u <- as.numeric((t(u)%*%v2)/(t(v2)%*%v2))*v2
-
-P_v <- v%*%(as.numeric((t(v)%*%v)^(-1))*t(v))
-
-print(P_v%*%u)
-
-P_v2 <- v2%*%(as.numeric((t(v2)%*%v2)^(-1))*t(v2))
-
-print(P_v2%*%u)
-
-print(P_v2%*%v2)
+((2/3) * x1) + (sqrt(35) * x2)
 ```
 
-# Referencias
+El **espacio columna de** $\mathbf{X}$ son todas las combinaciones lineales posibles.
+
+**La variable respuesta $\mathbf{y}$ no hace parte de ese espacio columna**.
+
+[**¿Qué se hace?**]{style="color:red"} Proyectar a $\mathbf{y}$ sobre el espacio columna de $\mathbf{X}$.
+
+<img src="./images/proyeccionML.png" alt="proyeccion" width="500"/>
+
+Tomado de: Abraham & Ledolter (2004)
+
+## Ejemplo Práctico
+
+```{r, results = 'hold'}
+# Pearson
+cor(trees)
+```
+```{r, results = 'hold'}
+# Relación entre variables
+plot(trees)
+```
+
+
+
+```{r, results = 'hold'}
+# Regresión del volumen del árbol en función de la altura
+mls <- lm(Volume ~ Height, data = trees)
+
+# Resumen del modelo
+summary(mls)
+```
+**Interpretación:**
+
+
+
+```{r, results = 'hold'}
+# Regresión del volumen del árbol en función de la altura y el diámetro
+modelo_arboles <- lm(Volume ~ Height + Girth, data = trees)
+
+# Resumen del modelo
+summary(modelo_arboles)
+```
+**Interpretación:**
+
+
+# Bibliografía
+
+-   Abraham, B. & Ledolter J. (2004). Introduction to Regression Modeling.
+
+-   Rencher, A. C. & Schaalje, G. B. (2008). Linear models in statistics. John Wiley & Sons.
