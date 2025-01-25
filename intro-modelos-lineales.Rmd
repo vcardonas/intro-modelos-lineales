@@ -47,7 +47,7 @@ Por lo que en la regresión, se pueden hacer dos diferentes análisis:
 
 ## ¿Qué es un Modelo Lineal?
 
-Un modelo proporciona **un marco teórico para comprender mejor un fenómeno de interés**, proporcionando aproximaciones útiles sobre las relaciones entre las variables.
+Un modelo proporciona **un marco teórico para comprender mejor un fenómeno de interés**, brindando aproximaciones útiles sobre las relaciones entre las variables.
 
 ### Una Ecuación Lineal
 
@@ -68,13 +68,43 @@ Una ecuación lineal tiene la forma: $$y = a + bx$$ donde
 -   $a$: Es el valor inicial o **intercepto**.
 -   $b$: Es la **pendiente**, que determina cómo cambia $y$ por cada unidad de cambio en $x$.
 
-Explorar: <https://www.desmos.com/calculator/tohv4xqb0k>
+Una ecuación lineal expresa que la **combinación lineal** de las variables es igual a un valor constante $b$.
 
 ```{r, results = 'hold'}
 knitr::include_url("https://www.desmos.com/calculator/tohv4xqb0k")
 ```
+Explorar: <https://www.desmos.com/calculator/tohv4xqb0k>
+
+```{r, results = 'hold'}
+# Vectores
+x1 <- c(1, 1)
+x2 <- c(0, 2)
+
+# Combinaciones lineales
+(2 * x1) - (3 * x2)
+
+(-10 * x1) + (2000 * x2)
+
+((2/3) * x1) + (sqrt(35) * x2)
+```
 
 # Correlación
+
+## Visualización entre variables cuantitativas
+
+<img src="./images/cor1.png" alt="cor1" width="1000"/>
+
+## Cuantificar la intensidad de la relación
+
+<img src="./images/cor2.png" alt="cor2" width="1000"/>
+
+## Otras medidas de asociación
+
+<img src="./images/cor3.png" alt="cor3" width="1000"/>
+
+## Correlación de Pearson
+
+<img src="./images/cor4.png" alt="cor4" width="1000"/>
 
 # Regresión lineal
 
@@ -96,7 +126,7 @@ Esto se hace generalmente utilizando el **método de mínimos cuadrados**.
 
 *Jugar a minimizar el error:* <https://huggingface.co/spaces/FreddyHernandez/linear_regression_game>
 
-## Regresión lineal Simple
+## Regresión Lineal Simple
 
 La regresión lineal simple tiene la siguiente forma:
 
@@ -114,11 +144,11 @@ $$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x} + \mathbf{\epsilon}$$ donde
 
 [**Aclaración:**]{style="color:red"} El modelo es lineal en los parámetros ($\beta$) no en las variables independientes ($\mathbf{X}$).
 
-## Regresión lineal Múltiple
+## Regresión Lineal Múltiple
 
 Cuando la respuesta $\mathbf{y}$ está influenciada por **más de una variable predictora**, se extiende a la forma:
 
-$$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x_1} + + \beta_1 \mathbf{x_2} + \cdots + \beta_{p-1} \mathbf{x}_{p-1} + \epsilon$$
+$$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x_1} + \beta_2 \mathbf{x_2} + \cdots + \beta_{p-1} \mathbf{x}_{p-1} + \epsilon$$
 o de forma matricial:
 
 $$
@@ -140,62 +170,64 @@ $$
 
 Se puede observar que $\mathbf{X} \mathbf{\beta}$ es una combinación lineal de los vectores $\mathbf{X}$.
 
-```{r, results = 'hold'}
-# vectores
-x1 <- c(1, 1)
-x2 <- c(0, 2)
-
-# Combinaciones lineales
-(2 * x1) - (3 * x2)
-
-(-10 * x1) + (2000 * x2)
-
-((2/3) * x1) + (sqrt(35) * x2)
-```
+En regresión lineal, buscamos **modelar la relación entre las variables predictoras $\mathbf{X}$ y la respuesta $\mathbf{y}$ usando un vector de coeficientes $\mathbf{\beta}$**. 
 
 El **espacio columna de** $\mathbf{X}$ son todas las combinaciones lineales posibles.
 
-**La variable respuesta $\mathbf{y}$ no hace parte de ese espacio columna**.
+Pero **la variable respuesta $\mathbf{y}$ no hace parte de ese espacio columna**.
 
-[**¿Qué se hace?**]{style="color:red"} Proyectar a $\mathbf{y}$ sobre el espacio columna de $\mathbf{X}$.
+[**¿Qué se debe hacer?**]{style="color:red"}
+
+Proyectar a $\mathbf{y}$ sobre el espacio columna de $\mathbf{X}$ y encontrar la que más minimice el error.
+
+De forma que las predicciones serán:
+
+$$\hat{\mathbf{y}} = \mathbf{X} \hat{\mathbf{\beta}}$$
 
 <img src="./images/proyeccionML.png" alt="proyeccion" width="500"/>
 
 Tomado de: Abraham & Ledolter (2004)
 
-## Ejemplo Práctico
+## Ejemplo en R
+
+Los datos a analizar corresponden a una serie de variables sociales, educativas, deportivas y de seguridad en las zonas rurales de Antioquia en Colombia para el año 2016.
+
+Los datos son tomados de:
+
+- [Shiny App URL](https://danielrivera1.shinyapps.io/Regression2/)
+
+- [RStudio Cloud Project](https://rstudio.cloud/project/249309)
+
+que a su vez, se encuentran disponibles públicamente en la página del Anuario Estadístico de Antioquia del Departamento Administrativo de Planeación.
+
+```{r, results = 'hold'}
+datos <- read.csv("./data/safety_data.csv", dec = ",")
+str(datos)
+```
+```{r, results = 'hold'}
+# Diagrama de dispersión
+plot(datos[c("LesionesPer", "SchoolDes", "Extortions", "SportsScenari")])
+```
 
 ```{r, results = 'hold'}
 # Pearson
-cor(trees)
-```
-```{r, results = 'hold'}
-# Relación entre variables
-plot(trees)
+cor(datos[c("LesionesPer", "SchoolDes", "Extortions", "SportsScenari")])
 ```
 
-
-
 ```{r, results = 'hold'}
-# Regresión del volumen del árbol en función de la altura
-mls <- lm(Volume ~ Height, data = trees)
+
+# Regresión Lineal Simple
+mls <- lm(LesionesPer ~ Extortions, data = datos)
 
 # Resumen del modelo
 summary(mls)
 ```
 **Interpretación:**
 
-
-
-```{r, results = 'hold'}
-# Regresión del volumen del árbol en función de la altura y el diámetro
-modelo_arboles <- lm(Volume ~ Height + Girth, data = trees)
-
-# Resumen del modelo
-summary(modelo_arboles)
-```
-**Interpretación:**
-
+- **Intercepto (8.372):** Cuando no hay extorsiones (Extortions = 0), el modelo predice un promedio de 8.372 lesiones personales.
+- **Pendiente (12.358):** Por cada aumento de una unidad en extorsiones, se predice un incremento promedio de 12.358 en las lesiones personales. Este coeficiente es estadísticamente significativo (**p < 0.001**).
+- **Coeficiente de determinación (R-squared):** expresa el porcentaje de varianza explicado por el modelo, en este caso, es del 40.5%
+- **Coeficiente de determinación (Adjusted R-squared):** penaliza a $R^2$ dependiendo el número de parámetros. **No se puede interpretar como porcentaje de varianza explicado**. Tiene valores entre 0 y 1, y cuánto más cercano a 1, mejor.
 
 # Bibliografía
 
