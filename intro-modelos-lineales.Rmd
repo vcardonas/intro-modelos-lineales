@@ -1,18 +1,21 @@
 ---
 title: "Introducción a los Modelos Lineales"
-author: 
-- Adrián Rey, Valentina Cardona & Juan Diego Baez
-- GitHub https://github.com/vcardonas/intro-modelos-lineales
-- Rpubs https://rpubs.com/vcardonas/intro-modelos-lineales
-date: ""
+author:
+- "Adrián Rey, Valentina Cardona & Juan Diego Baez"
+- "GitHub https://github.com/vcardonas/intro-modelos-lineales"
+- "Rpubs https://rpubs.com/vcardonas/intro-modelos-lineales"
+date: ''
 output:
   html_document:
     highlight: default
     theme: spacelab
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
     toc_float:
       collapsed: true
+  pdf_document:
+    toc: true
+    number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -53,11 +56,9 @@ Un modelo proporciona **un marco teórico para comprender mejor un fenómeno de 
 
 En un modelo, se asume que **la relación entre** $X$ y $Y$ se puede capturar por medio de una función matemática.
 
-<p align="center">
-
-<img src="./images/fun_cos.png" alt="Función Coseno" width="200"/> <img src="./images/fun_cuadratica.png" alt="Función Cuadrática" width="200"/> <img src="./images/fun_recta.png" alt="Función Lineal" width="200"/>
-
-</p>
+![Función Coseno](./images/fun_cos.png){width=30%}
+![Función Cuadrática](./images/fun_cuadratica.png){width=30%}
+![Función Lineal](./images/fun_recta.png){width=30%}
 
 Le llamamos modelos **lineales** porque esta función es una **ecuación lineal**, la cual describe una línea recta en un plano cartesiano (espacio bidimensional).
 
@@ -92,19 +93,20 @@ x2 <- c(0, 2)
 
 ## Visualización entre variables cuantitativas
 
-<img src="./images/cor1.png" alt="cor1" width="1000"/>
+![](./images/cor1.png){width=100%}
+
 
 ## Cuantificar la intensidad de la relación
 
-<img src="./images/cor2.png" alt="cor2" width="1000"/>
+![](./images/cor2.png){width=100%}
 
 ## Otras medidas de asociación
 
-<img src="./images/cor3.png" alt="cor3" width="1000"/>
+![](./images/cor3.png){width=100%}
 
 ## Correlación de Pearson
 
-<img src="./images/cor4.png" alt="cor4" width="1000"/>
+![](./images/cor4.png){width=100%}
 
 # Regresión lineal
 
@@ -116,7 +118,7 @@ Aunque los datos pueden seguir un patrón aproximado lineal, *la línea generalm
 
 Esto se debe a los **errores**, que representan la distancia entre los datos observados y la línea recta.
 
-<img src="./images/errores.png" alt="Errores" width="500"/>
+![](./images/errores.png){width=50%}
 
 Tomado de: [Regresión Lineal Simple. Conceptos básicos](https://www.youtube.com/watch?v=vbd3QJPHTJM)
 
@@ -151,7 +153,6 @@ Cuando la respuesta $\mathbf{y}$ está influenciada por **más de una variable p
 $$\mathbf{y} = \mathbf{\beta_0} + \beta_1 \mathbf{x_1} + \beta_2 \mathbf{x_2} + \cdots + \beta_{p-1} \mathbf{x}_{p-1} + \epsilon$$
 o de forma matricial:
 
-$$
 \begin{align}
 \mathbf{y} &= \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon} \\
 \begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\ y_n \end{bmatrix}_{n \times 1} &= 
@@ -164,7 +165,6 @@ $$
 \begin{bmatrix} \beta_{0} \\ \beta_{1} \\ \vdots \\ \beta_{p-1} \end{bmatrix}_{p \times 1} + 
 \begin{bmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \vdots \\ \epsilon_n \end{bmatrix}_{n \times 1}
 \end{align}
-$$
 
 ### Representación geométrica
 
@@ -183,9 +183,7 @@ Proyectar a $\mathbf{y}$ sobre el espacio columna de $\mathbf{X}$ y encontrar la
 De forma que las predicciones serán:
 
 $$\hat{\mathbf{y}} = \mathbf{X} \hat{\mathbf{\beta}}$$
-
-<img src="./images/proyeccionML.png" alt="proyeccion" width="500"/>
-
+![](./images/proyeccionML.png){width=50%}
 Tomado de: Abraham & Ledolter (2004)
 
 ## Ejemplo en R
